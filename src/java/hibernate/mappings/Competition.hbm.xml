@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.Competition" table="competition" catalog="olympics_db">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="sport" class="hibernate.mappings.Sport" fetch="select" lazy="false">
+            <column name="id_sport"/>
+        </many-to-one>
+        
+        <many-to-one name="sportDiscipline" class="hibernate.mappings.SportDiscipline" lazy="false" fetch="select">
+            <column name="id_sport_discipline"/>
+        </many-to-one>
+        
+        <property name="sex" type="string">
+            <column name="sex" length="1"/>
+        </property>
+        
+        <property name="startDate" type="date">
+            <column name="start_date"/>
+        </property>
+        
+        <property name="finishDate" type="date">
+            <column name="finish_date"/>
+        </property>
+        
+        <property name="location" type="string">
+            <column name="location" length="128"/>
+        </property>
+        
+        <set name="teams" table="competition_team" inverse="false" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="id_competition"/>
+            </key>
+            
+            <many-to-many class="hibernate.mappings.Team">
+                <column name="id_team"/>
+            </many-to-many>
+        </set>  
+        
+        <set name="sportsmans" table="competition_sportsman" inverse="false" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="id_competition"/>
+            </key>
+            
+            <many-to-many class="hibernate.mappings.Sportsman">
+                <column name="id_sportsman"/>
+            </many-to-many>
+        </set>
+        
+        <many-to-one name="delegate" class="hibernate.mappings.User" lazy="false" fetch="select">
+            <column name="id_delegate"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>

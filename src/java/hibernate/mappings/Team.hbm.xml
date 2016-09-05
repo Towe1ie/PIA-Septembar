@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.Team" table="team" catalog="olympics_db">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+      
+        <many-to-one name="country" class="hibernate.mappings.Country" fetch="select" lazy="false">
+            <column name="id_country"/>
+        </many-to-one>
+        
+        <many-to-one name="sport" class="hibernate.mappings.Sport" fetch="select" lazy="false">
+            <column name="id_sport"/>
+        </many-to-one>
+        
+        <set name="competitions" table="competition_team" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="id_team"/>
+            </key>
+            
+            <many-to-many class="hibernate.mappings.Competition">
+                <column name="id_competition"/>
+            </many-to-many>
+        </set>
+        
+        <property name="sex" type="string">
+            <column name="sex" length="1"/>
+        </property>
+        
+        <set name="team_qualifyingGroups" table="team_qualifying_group" inverse="false" fetch="select" lazy="false" sort="natural">
+            <key>
+                <column name="id_team"/>
+            </key>
+            
+            <one-to-many class="hibernate.mappings.Team_QualifyingGroup"/>
+        </set>
+    </class>
+</hibernate-mapping>

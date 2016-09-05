@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewParam 
+            id="competition"
+            name="competition"
+            value="#{delegateIndSchedule.competition}"
+            converter="CompetitionConverter"/>
+        <f:viewAction action="#{delegateIndSchedule.onLoad()}"/>
+    </f:metadata>
+
+
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <h:commandButton rendered="#{delegateIndSchedule.currentGroups.size() == 0}" 
+                                     value="Generisi grupe" 
+                                     action="#{delegateIndSchedule.generateGroups()}">
+                        <f:ajax execute="@all" render="@all"/>
+                    </h:commandButton>
+                </h:form>
+
+                <ui:repeat value="#{delegateIndSchedule.currentGroups}" var="group">
+                    <h:form id="id_form_outer">
+                        <p:dataTable id="id_table_sportsmans" value="#{group.sportsman_qualifyingGroups}" var="sportsman">
+                            <p:column id="id_sportsmans_col">
+                                <f:facet name="header">
+                                    <h:form id="id_form_inner">
+                                        Grupa #{group.symbol} <br/>
+                                        <p:outputLabel for="id_datetime" value="Datum i vreme"/>
+                                        <br/>
+                                        <p:calendar id="id_datetime"
+                                                    value="#{group.date_and_time}"
+                                                    required="true"
+                                                    pattern="MM/dd/yyyy HH:mm">
+                                            <p:ajax event="dateSelect" update="id_error_messages"/>
+                                        </p:calendar>
+                                        <p:message for="id_datetime"/>
+
+                                        <p:commandButton value="Potvrdi vreme"
+                                                         process="@form"
+                                                         action="#{delegateIndSchedule.updateGroupDateTime(group)}"/>
+                                    </h:form>
+                                </f:facet>
+
+
+                                <h:panelGroup rendered="#{!delegateIndSchedule.shooting}">
+                                    #{sportsman.sportsman.firstName} &nbsp; #{sportsman.sportsman.lastName}
+
+                                    <p:inputText id="id_result" value="#{sportsman.result}">
+                                        <f:validator validatorId="ResultValidator"/>
+                                        <f:attribute name="sport" value="#{sportsman.qualifyingGroup.competition.sport}">
+                                            <f:converter converterId="SportConverter"/>
+                                        </f:attribute>
+                                        <f:attribute name="sportDiscipline" value="#{sportsman.qualifyingGroup.competition.sportDiscipline}">
+                                            <f:converter converterId="SportDisciplineConverter"/>
+                                        </f:attribute>
+                                    </p:inputText>
+                                    <h:message id="id_result_msg" for="id_result" style="color: red"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{delegateIndSchedule.shooting}">
+                                    #{sportsman.sportsman.firstName} &nbsp; #{sportsman.sportsman.lastName} (#{sportsman.result})
+                                    <p:inputText id="id_result_shooting" value="#{sportsman.tmp_result}">
+                                        <f:validator validatorId="ResultValidator"/>
+                                        <f:attribute name="sport" value="#{sportsman.qualifyingGroup.competition.sport}">
+                                            <f:converter converterId="SportConverter"/>
+                                        </f:attribute>
+                                        <f:attribute name="sportDiscipline" value="#{sportsman.qualifyingGroup.competition.sportDiscipline}">
+                                            <f:converter converterId="SportDisciplineConverter"/>
+                                        </f:attribute>
+                                    </p:inputText>
+                                    <h:message id="id_result_shooting_msg" for="id_result_shooting" style="color: red"/>
+                                </h:panelGroup>
+
+
+
+                                <f:facet name="footer">
+
+                                    <p:commandButton value="Potvrdi rezultate"
+                                                     disabled="#{group.is_elimination and group.is_finished}"
+                                                     process="@form"
+                                                     update="@form"
+                                                     action="#{delegateIndSchedule.updateResults(group)}"/>
+                                </f:facet>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </ui:repeat>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

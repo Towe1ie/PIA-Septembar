@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.QualifyingGroup" table="qualifying_group" catalog="olympics_db">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="competition" class="hibernate.mappings.Competition" fetch="select" lazy="false">
+            <column name="id_competition"/>
+        </many-to-one>
+        
+        <property name="symbol" type="string">
+            <column name="symbol" length="1"/>
+        </property>
+        
+        <set name="team_qualifyingGroups" table="team_qualifying_group" inverse="true" fetch="select" lazy="false" cascade="all" sort="natural">
+            <key>
+                <column name="id_qualifying_group"/>
+            </key>
+            
+            <one-to-many class="hibernate.mappings.Team_QualifyingGroup"/>
+        </set>
+        
+        <set name="sportsman_qualifyingGroups" table="sportsman_qualifying_group" inverse="true" lazy="false" cascade="all" sort="natural">
+            <key>
+                <column name="id_qualifying_group"/>
+            </key>
+            
+            <one-to-many class="hibernate.mappings.Sportsman_QualifyingGroup"/>
+        </set>
+        
+        <set name="rounds" table="round" fetch="select" lazy="false" cascade="all" sort="natural">
+            <key>
+                <column name="id_qualifying_group"/>
+            </key>
+            
+            <one-to-many class="hibernate.mappings.Round"/>
+        </set>
+        
+        <property name="is_elimination" type="boolean">
+            <column name="is_elimination"/>
+        </property>
+        
+        <property name="is_finished" type="boolean">
+            <column name="is_finished"/>
+        </property>
+        
+        <property name="date_and_time" type="timestamp">
+            <column name="date_and_time"/>
+        </property>
+    </class>
+</hibernate-mapping>

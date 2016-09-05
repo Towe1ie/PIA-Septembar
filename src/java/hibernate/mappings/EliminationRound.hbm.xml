@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.EliminationRound" table="elimination_round">
+        <id name="id" type="int">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="competition" class="hibernate.mappings.Competition" column="id_competition"/>
+        <many-to-one name="quarter_game" class="hibernate.mappings.Game" column="id_quarter_game"/>
+        <many-to-one name="semi_game" class="hibernate.mappings.Game" column="id_semi_game"/>
+        <many-to-one name="third_game" class="hibernate.mappings.Game" column="id_third_game"/>
+        <many-to-one name="finals_game" class="hibernate.mappings.Game" column="id_finals_game"/>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="template.xhtml">
+            <ui:define name="title">
+                Organizator
+            </ui:define>
+
+            <ui:define name="content">
+                <h:panelGrid columns="3">
+                    <h:panelGroup>
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <h:outputLabel for="id_sport" value="Sport"/>
+                                <p:autoComplete id="id_sport"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Sport nije unet!"
+                                                value="#{organizer.selectedSport}"
+                                                completeMethod="#{organizer.getAvailableSports}"
+                                                var="sport"
+                                                itemLabel="#{sport.name}"
+                                                itemValue="#{sport}"
+                                                converter="SportConverter"/>
+                                <h:message for="id_sport"/>
+
+                                <f:facet name="footer">
+                                    <h:commandButton value="Dodaj" action="#{organizer.addSport()}"/>
+                                </f:facet>
+                            </h:panelGrid>
+                        </h:form>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <h:outputLabel for="id_discp_sport" value="Sport"/>
+                                <p:autoComplete id="id_discp_sport"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                value="#{organizer.discipline_selectedSport}"
+                                                completeMethod="#{organizer.getChosenSports}"
+                                                var="sport"
+                                                itemLabel="#{sport.name}"
+                                                itemValue="#{sport}"
+                                                converter="SportConverter">
+                                    <p:ajax event="itemSelect" update="id_discp" listener="#{organizer.discSportChange()}"/>
+                                </p:autoComplete>
+
+                                <h:outputLabel for="id_discp" value="Disciplina"/>
+                                <p:autoComplete id="id_discp"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Disciplina nije uneta!"
+                                                value="#{organizer.selectedDiscipline}"
+                                                completeMethod="#{organizer.getAvailableDisciplines}"
+                                                var="discp"
+                                                itemLabel="#{discp.name}"
+                                                itemValue="#{discp}"
+                                                converter="SportDisciplineConverter"/>
+
+                                <f:facet name="footer">
+                                    <h:commandButton value="Dodaj" action="#{organizer.addDiscipline()}"/>
+                                </f:facet>
+                            </h:panelGrid>
+                        </h:form>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:form id="id_comp_form">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel for="id_comp_sport" value="Sport"/>
+                                <p:autoComplete id="id_comp_sport"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                value="#{organizer.comp_selectedSport}"
+                                                completeMethod="#{organizer.getChosenSports}"
+                                                var="sport"
+                                                itemLabel="#{sport.name}"
+                                                itemValue="#{sport}"
+                                                converter="SportConverter">
+                                    <p:ajax event="itemSelect"
+                                            update="id_comp_discp id_comp_form id_error_messages"
+                                            listener="#{organizer.refrechSelections}"/>
+                                </p:autoComplete>
+
+                                <h:outputLabel for="id_comp_discp" value="Disciplina"/>
+                                <p:autoComplete id="id_comp_discp"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Disciplina nije uneta!"
+                                                value="#{organizer.comp_selectedDiscipline}"
+                                                completeMethod="#{organizer.getChosenDisciplines}"
+                                                var="discp"
+                                                itemLabel="#{discp.name}"
+                                                itemValue="#{discp}"
+                                                converter="SportDisciplineConverter">
+                                    <p:ajax event="itemSelect" 
+                                            update="id_comp_form id_error_messages"
+                                            listener="#{organizer.refrechSelections}"/>
+                                </p:autoComplete>
+
+                                <h:outputLabel for="id_comp_sex" value="Kategorija"/>
+                                <h:selectOneMenu id="id_comp_sex" value="#{organizer.comp_sex}">
+                                    <f:selectItem itemLabel="Muska" itemValue="m"/>
+                                    <f:selectItem itemLabel="Zenska" itemValue="z"/>
+                                    <f:ajax event="change"
+                                            execute="id_comp_form @this id_error_messages" 
+                                            render="id_comp_form @this id_error_messages"
+                                            listener="#{organizer.testAjax()}"/>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel for="id_comp_start_date" value="Datum pocetka"/>
+                                <p:calendar id="id_comp_start_date" value="#{organizer.comp_startDate}"/>
+
+                                <h:outputLabel for="id_comp_finish_date" value="Datum kraja"/>
+                                <p:calendar id="id_comp_finish_date" value="#{organizer.comp_finishDate}"/>
+
+                                <h:outputLabel for="id_comp_location" value="Lokacija"/>
+                                <h:inputText id="id_comp_location" value="#{organizer.comp_location}"/>
+
+                                <h:outputLabel rendered="#{organizer.comp_selectedDiscipline.disciplineType == 'ekipni'}" for="id_comp_teams" value="Timovi"/>
+                                <h:selectManyListbox 
+                                    rendered="#{organizer.comp_selectedDiscipline.disciplineType == 'ekipni'}"
+                                    id="id_comp_teams" value="#{organizer.comp_chosenTeams}"
+                                    converter="TeamConverter">
+                                    <f:selectItems value="#{organizer.teamsForCompetition}"
+                                                   var="team"
+                                                   itemLabel="#{team.country.name}"
+                                                   itemValue="#{team}"/>
+                                </h:selectManyListbox>
+
+                                <h:outputLabel rendered="#{organizer.comp_selectedDiscipline.disciplineType == 'individualni'}" 
+                                               for="id_comp_sportsmans" 
+                                               value="Sportisti"/>
+                                <h:selectManyListbox 
+                                    rendered="#{organizer.comp_selectedDiscipline.disciplineType == 'individualni'}"
+                                    id="id_comp_sportsmans" value="#{organizer.comp_chosenSportsmans}"
+                                    converter="SportsmanConverter">
+                                    <f:selectItems value="#{organizer.sportsmansForCompetition}"
+                                                   var="sportsman"
+                                                   itemLabel="#{sportsman.firstName} #{sportsman.lastName}"
+                                                   itemValue="#{sportsman}"/>
+                                </h:selectManyListbox>
+
+                                <h:outputLabel for="id_delegate" value="Delegat"/>
+                                <p:autoComplete id="id_delegate"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Delegat nije izabran"
+                                                value="#{organizer.comp_delegate}"
+                                                completeMethod="#{organizer.queryDelegates()}"
+                                                var="deleg"
+                                                itemLabel="#{deleg.name} #{deleg.surname}"
+                                                itemValue="#{deleg}"
+                                                converter="UserConverter">
+                                </p:autoComplete>
+
+                                <f:facet name="footer">
+                                    <h:commandButton value="Kreiraj takmicenje" action="#{organizer.addCompetition()}"/>
+                                </f:facet>
+                            </h:panelGrid>
+                        </h:form>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+
+                <p:panelGrid columns="2">
+                    <p:dataTable var="record" value="#{organizer.records}">
+                        <f:facet name="header">
+                            Rekordi
+                        </f:facet>
+
+                        <p:column>
+                            <f:facet name="header"> Disciplina </f:facet>
+                                #{record.sportDiscipline.name}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Rezultat </f:facet>
+                                #{record.result}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Ime </f:facet>
+                                #{record.firstName}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Prezime </f:facet>
+                                #{record.lastName}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Zemlja </f:facet>
+                            <p:graphicImage library="images" name="#{record.country.flagRef}" class="flag"/>
+                            #{record.country.name}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Lokacija </f:facet>
+                                #{record.location}
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:form>
+                        <h:panelGroup id="id_requests_wrapper">
+                            <p:dataTable id="id_table_requests" var="user" value="#{organizer.userRequests}">
+                                <f:facet name="header">
+                                    Korisnicki zahtevi
+                                </f:facet>
+
+                                <p:column>
+                                    <f:facet name="header"> Username </f:facet>
+                                        #{user.username}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header"> Ime </f:facet>
+                                        #{user.name}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header"> Prezime </f:facet>
+                                        #{user.surname}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header"> Zemlja </f:facet>
+                                        #{user.country.name}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header"> Email </f:facet>
+                                        #{user.email}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header"> Tip </f:facet>
+                                        #{user.type}
+                                </p:column>
+
+                                <p:column>
+
+                                    <p:commandButton
+                                        value="Odobri"
+                                        action="#{organizer.approveUser(user)}"
+                                        process="@all"
+                                        update="@all">
+                                        
+                                    </p:commandButton>
+
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                    </h:form>
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

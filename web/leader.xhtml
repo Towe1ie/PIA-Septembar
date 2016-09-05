@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                Nacionalni vodja
+            </ui:define>
+
+            <ui:define name="header_menu_items">
+                <li>
+                    <h:commandLink action="leader_search" value="Pretraga"/>
+                </li>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:panelGrid columns="2">
+                    <h:form>
+                        <h:panelGrid columns="3">
+                            <f:facet name="header">
+                                Ekipni sportovi
+                            </f:facet>
+
+                            <h:outputLabel for="id_sport" value="Sport"/>
+                            <h:selectOneMenu id="id_sport" required="true" value="#{leader.team_sport}" converter="SportConverter">
+                                <f:ajax render="id_error_messages id_sport_discp" execute="id_sport_discp"/>
+                                <f:selectItems 
+                                    value="#{leader.teamSports}"
+                                    var="sport"
+                                    itemLabel="#{sport.name}"
+                                    itemValue="#{sport}"/>
+                            </h:selectOneMenu>
+                            <h:message for="id_sport"/>
+
+                            <h:outputLabel for="id_sport_discp" value="Sportska disciplina"/>
+                            <h:selectOneMenu id="id_sport_discp" value="#{leader.team_selectedDiscipline}" converter="SportDisciplineConverter">
+                                <f:ajax/>
+                                <f:selectItems
+                                    id="id_discp_sport_items"
+                                    value="#{leader.getSportDisciplines(false)}"
+                                    var="discp"
+                                    itemLabel="#{discp.name}"
+                                    itemValue="#{discp}"/>
+                            </h:selectOneMenu>
+                            <h:message for="id_sport_discp"/>
+
+                            <h:outputLabel for="id_sex" value="Pol"/>
+                            <h:selectOneMenu id="id_sex" value="#{leader.team_sex}">
+                                <f:selectItem itemLabel="Muski" itemValue="m"/>
+                                <f:selectItem itemLabel="Zenski" itemValue="z"/>
+                            </h:selectOneMenu>
+                            <h:message for="id_sex"/>
+
+                            <h:outputLabel for="id_ime" value="Ime"/>
+                            <h:inputText id="id_ime" value="#{leader.team_firstName}">
+                                <f:ajax/>
+                            </h:inputText>
+                            <h:message for="id_ime"/>
+
+                            <h:outputLabel for="id_prezime" value="Prezime"/>
+                            <h:inputText id="id_prezime" value="#{leader.team_lastName}">
+                                <f:ajax/>
+                            </h:inputText>
+                            <h:message for="id_prezime"/>
+
+                            <span></span>
+                            <h:commandButton id="id_dodaj_igraca" value="Dodaj u ekipu">
+                                <f:ajax
+                                    event="click"
+                                    render="id_ekipa id_ime id_prezime id_sport_discp"
+                                    execute="id_sport_discp"
+                                    listener="#{leader.addToTeam()}"/>
+                            </h:commandButton>
+                            <h:message for="id_dodaj_igraca"/>
+
+                            <h:outputLabel for="id_ekipa" value="Ekipa"/>
+                            <h:inputTextarea id="id_ekipa" binding="#{leader.ui_teamTextArea}" value="#{leader.teamText}" disabled="true"/>
+                            <h:message for="id_ekipa"/>
+
+                            <span/>
+                            <h:commandButton id="id_prijavi_ekipu" value="Prijavi ekipu" action="#{leader.registerTeam()}"/>
+                            <h:message for="id_prijavi_ekipu"/>
+
+                        </h:panelGrid>
+                    </h:form>
+
+                    <h:form id="id_ind_form">
+                        <h:panelGrid id="id_ind_panel" columns="3">
+                            <f:facet name="header">
+                                Individualni sportovi
+                            </f:facet>
+
+                            <h:outputLabel for="id_ind_sport" value="Sport"/>
+                            <h:selectOneMenu id="id_ind_sport" required="true" value="#{leader.ind_selectedSport}" converter="SportConverter">
+                                <f:ajax render="id_error_messages id_ind_sport_discp" execute="id_ind_sport_discp"/>
+                                <f:selectItems 
+                                    value="#{leader.individualSports}"
+                                    var="sport"
+                                    itemLabel="#{sport.name}"
+                                    itemValue="#{sport}"/>
+                            </h:selectOneMenu>
+                            <h:message for="id_ind_sport"/>
+
+                            <h:outputLabel for="id_ind_sport_discp" value="Sportska disciplina"/>
+                            <h:selectManyListbox id="id_ind_sport_discp" value="#{leader.ind_selectedDisciplines}" converter="SportDisciplineConverter">
+                                <f:selectItems
+                                    value="#{leader.getSportDisciplines(true)}"
+                                    var="discp"
+                                    itemLabel="#{discp.name}"
+                                    itemValue="#{discp}"/>
+                            </h:selectManyListbox>
+                            <h:message for="id_ind_sport_discp"/>
+
+                            <h:outputLabel for="id_ind_ime" value="Ime"/>
+                            <h:inputText id="id_ind_ime" value="#{leader.ind_firstName}">
+                                <f:ajax/>
+                            </h:inputText>
+                            <h:message for="id_ind_ime"/>
+
+                            <h:outputLabel for="id_ind_prezime" value="Prezime"/>
+                            <h:inputText id="id_ind_prezime" value="#{leader.ind_lastName}">
+                                <f:ajax/>
+                            </h:inputText>
+                            <h:message for="id_ind_prezime"/>
+
+                            <h:outputLabel for="id_ind_sex" value="Pol"/>
+                            <h:selectOneMenu id="id_ind_sex" value="#{leader.ind_sex}">
+                                <f:selectItem itemLabel="Muski" itemValue="m"/>
+                                <f:selectItem itemLabel="Zenski" itemValue="z"/>
+                            </h:selectOneMenu>
+                            <h:message for="id_ind_sex"/>
+
+                            <span/>
+                            <h:commandButton id="id_prijavi_sportistu" value="Prijavi sportistu" action="#{leader.registerIndividualSportsman()}"/>
+                            <h:message for="id_prijavi_sportistu"/>
+
+                        </h:panelGrid>
+                    </h:form>
+                </h:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

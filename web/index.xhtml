@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Početna</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="template.xhtml">
+            <ui:define name="content">
+                <h:messages globalOnly="true"/>
+
+                <div class="panels-container">
+                    <div class="panel-wrapper">
+                        <div class="panel">
+                            <!-- ********************************NELOGOVAN KORISNIK******************************* -->   
+                            <c:if test="#{login.currUser==null}">                    
+                                <div class="formlogin">
+                                    <h:form>
+                                        <h1>Login</h1>
+                                        <h:panelGrid columns="3" >                     
+                                            <h:outputLabel for="username"> <h2>Korisničko ime:</h2> </h:outputLabel> 
+                                            <h:inputText binding="#{login.username}" id="username"  value="#{login.user.username}"  required="true" requiredMessage="Korisničko ime je obavezno!" size="30"  />  
+                                            <h:panelGroup><span style="color: white"> <h:message for="username"/> </span></h:panelGroup>
+
+                                            <h:outputLabel for="pwd"  ><h2> Šifra:</h2></h:outputLabel>  
+                                            <h:inputSecret binding="#{login.password}" id="pwd" value="#{login.user.password}" required="true" requiredMessage="Šifra je obavezna!" size="30" />  
+                                            <h:panelGroup><span style="color: white"> <h:message for="pwd"/> </span></h:panelGroup>
+
+                                            <h:outputLabel value="" />
+                                            <h:commandButton id="login"  value="Login" action="#{login.login}" styleClass="loginButton" /> 
+                                        </h:panelGrid>
+                                    </h:form>
+                                </div>  
+                                <div class="formreg">    
+                                    <h:form enctype="multipart/form-data">
+                                        <h1>Registracija </h1>
+                                        <h:panelGrid columns="3" >                     
+                                            <h2>Korisničko ime:</h2>
+                                            <h:inputText binding="#{login.usernameReg}" id="username3"  value="#{login.user.username}"  required="true" requiredMessage="Korisničko ime je obavezno!" size="30"  />  
+                                            <h:panelGroup><span style="color: white"> <h:message for="username3"/> </span></h:panelGroup>
+
+                                            <h2> Šifra:</h2>
+                                            <h:inputSecret binding="#{login.passwordReg1}" id="pwd1" value="#{login.user.password}" required="true" requiredMessage="Šifra je obavezna!" size="30"  >  
+                                                <f:ajax event="blur" execute="pwd1" render="errorPwd1" listener="#{login.passwordAJAX(login.user.password, login.passwordReg1)}"/> 
+                                            </h:inputSecret>
+                                            <h:panelGroup>
+                                                <span style="color: white">
+                                                    <h:message id="errorPwd1" for="pwd1"/>
+                                                </span>
+                                            </h:panelGroup>
+
+                                            <h2>Ponovljena Šifra:</h2> 
+                                            <h:inputSecret binding="#{login.passwordReg2}" id="pwd2" value="#{login.passwordReg3}" required="true" requiredMessage="Ponovljena Šifra je obavezna!" size="30" > 
+                                                <f:ajax event="blur" execute="pwd2" render="errorPwd2" listener="#{login.passwordMatchAJAX(login.user.password, login.passwordReg3, login.passwordReg2)}"/> 
+                                            </h:inputSecret>
+                                            <h:panelGroup>
+                                                <span style="color: white">
+                                                    <h:message id="errorPwd2" for="pwd2"/>
+                                                </span>
+                                            </h:panelGroup>
+
+                                            <h2>Ime:</h2>
+                                            <h:inputText id="firstname"  value="#{login.user.name}"  required="true" requiredMessage="Ime je obavezno!" size="30" />  
+                                            <h:panelGroup></h:panelGroup>
+
+                                            <h2>Prezime:</h2>
+                                            <h:inputText id="lastname"  value="#{login.user.surname}"  required="true" requiredMessage="Prezime je obavezno!" size="30" />  
+                                            <h:panelGroup></h:panelGroup>
+
+                                            <h2>Zemlja:</h2>
+                                            <p:autoComplete id="id_country"
+                                                            dropdown="true"
+                                                            forceSelection="true"
+                                                            required="true"
+                                                            requiredMessage="Zemlja nije izabrana!"
+                                                            value="#{login.user.country}"
+                                                            completeMethod="#{search.countries}"
+                                                            var="country"
+                                                            itemLabel="#{country.name}"
+                                                            itemValue="#{country}"
+                                                            converter="CountryConverter"/>
+                                            <h:panelGroup></h:panelGroup>
+
+                                            <h2>Email:</h2>
+                                            <h:inputText binding="#{login.email}" id="email"  value="#{login.user.email}"  required="true" requiredMessage="Email je obavezan!" size="30" >  
+                                                <f:ajax event="blur" execute="email" render="errorEmail" listener="#{login.emailAJAX()}"/> 
+                                            </h:inputText>
+                                            <h:panelGroup><span style="color: white"> <h:message id="errorEmail" for="email"/> </span></h:panelGroup>
+
+                                            <h2>Tip korisnika:</h2>
+                                            <h:inputText id="type" binding="#{login.type}" value="#{login.user.type}"  required="true" requiredMessage="Tip je obavezan!" size="30" >  
+                                                <f:ajax event="blur" execute="type" render="errorType" listener="#{login.typeAJAX()}"/>
+                                            </h:inputText>
+                                            <h:panelGroup><span style="color: white"> <h:message id="errorType" for="type"/> </span></h:panelGroup>
+                                            <h:outputLabel value="" />
+                                            <h:commandButton value="Registracija" action="#{login.register}" styleClass="loginButton" />
+                                        </h:panelGrid> 
+
+                                    </h:form>    
+                                </div>                       
+                            </c:if>
+                            <!-- ********************************ULOGOVAN KORISNIK******************************* -->   
+                            <h:form>
+                                <c:if test="#{login.currUser!=null}">
+                                    <h2>Dobrodosli!</h2>
+                                    <h:commandButton value="Logout" action="#{login.logout}" />
+                                </c:if>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

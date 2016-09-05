@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Sistem za Olimpijadu</title>
+
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Olimpijada</title>
+
+        <link href="css/mojCSS.css" rel="stylesheet" type="text/css" />
+    </h:head>
+
+    <div class="wrapper">
+        <div class="logo">Olimpijada</div>
+        <div class="menu">
+            <h:form>
+                <ul>
+                    <li>
+                        <h:commandLink action="#{login.goToHome()}" value="Pocetna"/>
+                    </li>
+                    <li>
+                        <h:commandLink action="search" value="Pregled"/>
+                    </li>
+                    
+                    <ui:insert name="header_menu_items">
+                        
+                    </ui:insert>
+                    
+                    <li>
+                        <c:if test="#{login.currUser!=null}">
+                            <h:commandLink action="index" value="Logout"/>
+                        </c:if>
+                        <c:if test="#{login.currUser==null}">
+                            <h:commandLink action="index" value="Login/Register"/>
+                        </c:if>
+                    </li>
+                </ul>
+            </h:form>
+        </div>
+    </div>
+
+
+</html>
+

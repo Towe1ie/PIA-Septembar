@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 26, 2016 4:43:40 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="hibernate.mappings.Country" table="country" catalog="olympics_db" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        
+        <property name="name" type="string">
+            <column name="name" length="50" />
+        </property>
+        
+        <property name="flagRef" type="string">
+            <column name="flag_ref" length="50" />
+        </property>
+        
+        <set name="users" table="user" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="country_id" />
+            </key>
+            <one-to-many class="hibernate.mappings.User" />
+        </set>
+        
+        <set name="sportsmans" table="sportsman" inverse="true" lazy="false" fetch="select" cascade="all">
+            <key>
+                <column name="id_country" />
+            </key>
+            <one-to-many class="hibernate.mappings.Sportsman" />
+        </set>
+        
+        <property name="bronze" type="int">
+            <column name="bronze"/>
+        </property>
+        
+        <property name="silver" type="int">
+            <column name="silver"/>
+        </property>
+        
+        <property name="gold" type="int">
+            <column name="gold"/>
+        </property>
+    </class>
+</hibernate-mapping>

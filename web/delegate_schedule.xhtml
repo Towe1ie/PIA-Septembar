@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewParam 
+            id="competition"
+            name="competition"
+            value="#{delegateSchedule.competition}"
+            converter="CompetitionConverter"/>
+    </f:metadata>
+
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <h:commandButton rendered="#{delegateSchedule.groups.size() == 0}" value="Generisi grupe" action="#{delegateSchedule.generateGroups()}"/>
+                </h:form>
+
+                <p:dataTable id="id_groups_table" value="#{delegateSchedule.groups}" var="group">
+                    <p:column>
+                        <h:form id="id_form_groups">
+                            <p:dataTable value="#{group.team_qualifyingGroups}" var="tg">
+
+                                <p:column id="id_group_col">
+
+                                    <f:facet parent="id_group_col" name="header">
+                                        Grupa #{group.symbol} <br/>
+                                        <h:commandButton value="Raspored" action="#{delegateSchedule.fetchRoundsForGroup(group)}">
+                                            <f:ajax execute="id_form_games" render="id_form_games"/>
+                                        </h:commandButton>
+                                    </f:facet>
+                                    #{tg.team.country.name} #{tg.points}
+
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </p:column>
+                </p:dataTable>
+
+                <h:form id="id_form_games">
+                    <p:dataTable id="id_games" value="#{delegateSchedule.currentRounds}" var="round">
+
+                        <p:column>
+                            <p:dataTable value="#{round.games}" var="game">
+                                <p:column id="id_round_column">
+
+                                    <f:facet name="header">
+                                        Runda #{round.num}
+                                    </f:facet>
+
+                                    <h:panelGroup rendered="#{not delegateSchedule.individual}">
+                                        #{game.team1.country.name} - #{game.team2.country.name}
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{delegateSchedule.individual}">
+                                        #{game.sportsman1.firstName}
+                                        &nbsp;
+                                        #{game.sportsman1.lastName}
+                                        -
+                                        #{game.sportsman2.firstName}
+                                        &nbsp;
+                                        #{game.sportsman2.lastName}
+                                        
+                                    </h:panelGroup>
+                                    
+                                    <br/>
+                                    <p:outputLabel for="id_datetime" value="Datum i vreme"/>
+                                    <p:calendar id="id_datetime"
+                                                value="#{game.date_and_time}" 
+                                                pattern="MM/dd/yyyy HH:mm">
+                                        <p:ajax event="dateSelect"
+                                                update="id_error_messages"/>
+                                    </p:calendar>
+                                    
+                                    <br/>
+                                    <p:outputLabel for="id_result" value="Rezultat"/>
+                                    <h:inputText id="id_result"
+                                                 disabled="#{delegateSchedule.isDisabled(round)}"
+                                                 value="#{game.result}">
+                                        <f:validator validatorId="ResultValidator"/>
+                                        <f:ajax event="change" render="id_error_messages id_result_error"/>
+                                        <f:attribute name="sport" value="#{game.qualifyingGroup.competition.sport}">
+                                            <f:converter converterId="SportConverter"/>
+                                        </f:attribute>
+                                    </h:inputText>
+                                    <h:message id="id_result_error" for="id_result" style="color:red"/>
+
+                                    <f:facet name="footer">
+                                        <h:commandButton value="Zatvori kolo" action="#{delegateSchedule.closeRound(round)}">
+                                            <f:ajax execute="id_form_games id_groups_table id_form_groups" render="id_form_games id_groups_table id_form_groups"/>
+                                        </h:commandButton>
+                                    </f:facet>
+
+                                </p:column>
+                            </p:dataTable>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <h:commandButton value="Potvrdi" action="#{delegateSchedule.updateRounds()}">
+                                <f:ajax execute="id_datetime" render="id_datetime"/>
+                            </h:commandButton>
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

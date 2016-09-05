@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 26, 2016 4:43:40 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="hibernate.mappings.Sport" table="sport" catalog="olympics_db" optimistic-lock="version">
+        <id name="idsport" type="java.lang.Integer">
+            <column name="idsport" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="128" />
+        </property>
+        <set name="rioSports" table="rio_sport" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idsport" unique="true" />
+            </key>
+            <one-to-many class="hibernate.mappings.RioSport" />
+        </set>
+        <set name="sportDisciplines" table="sport_discipline" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="sport_id" />
+            </key>
+            <one-to-many class="hibernate.mappings.SportDiscipline" />
+        </set>
+        <set name="sportsmans" table="sportsman" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_sport" />
+            </key>
+            <one-to-many class="hibernate.mappings.Sportsman" />
+        </set>
+    </class>
+</hibernate-mapping>

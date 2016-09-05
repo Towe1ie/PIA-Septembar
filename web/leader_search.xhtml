@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="header_menu_items">
+                <li>
+                    <h:commandLink action="leader_search" value="Pretraga"/>
+                </li>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="id_form">
+                    <p:breadCrumb id="id_breadcrumb" homeDisplay="text" model="#{leaderSearch.menuModel}">
+                    </p:breadCrumb>
+
+                    <h:dataTable 
+                        id="id_sportsTable"
+                        rendered="#{leaderSearch.searchType == 0}"
+                        value="#{leaderSearch.queryRegisteredSports()}"
+                        var="s">
+                        <h:column>
+                            <h:commandLink value="#{s[0].name}" action="#{leaderSearch.goToDisciplines(s[0])}"/>
+                            [#{s[1]}]
+                        </h:column>
+                    </h:dataTable>
+
+                    <h:dataTable
+                        id="id_disciplineTable"
+                        rendered="#{leaderSearch.searchType == 1}"
+                        value="#{leaderSearch.disciplinesForSport}"
+                        var="discp">
+                        <h:column>
+                            <h:commandLink value="#{discp.name}" action="#{leaderSearch.goToSportsmans(discp)}"/>
+                        </h:column>
+                    </h:dataTable>
+
+                    <h:dataTable
+                        id="id_sportsmansTable"
+                        rendered="#{leaderSearch.searchType == 2}"
+                        value="#{leaderSearch.sportsmansForDiscipline}"
+                        var="sportsman">
+                        <h:column>
+                            #{sportsman.firstName} &nbsp; #{sportsman.lastName}
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+

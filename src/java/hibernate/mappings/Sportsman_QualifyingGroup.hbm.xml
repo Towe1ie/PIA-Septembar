@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.Sportsman_QualifyingGroup" table="sportsman_qualifying_group" catalog="olympics_db">
+        <id name="id" type="integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+  
+        <many-to-one name="sportsman" class="hibernate.mappings.Sportsman" lazy="false">
+            <column name="id_sportsman"/>
+        </many-to-one>
+      
+        <many-to-one name="qualifyingGroup" class="hibernate.mappings.QualifyingGroup" lazy="false">
+            <column name="id_qualifying_group"/>
+        </many-to-one>
+      
+        <property name="result" type="string">
+            <column name="result"/>
+        </property>
+    </class>
+</hibernate-mapping>

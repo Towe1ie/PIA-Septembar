@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.Round" table="round" catalog="olympics_db">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="qualifyingGroup" class="hibernate.mappings.QualifyingGroup" lazy="false" fetch="select">
+            <column name="id_qualifying_group"/>
+        </many-to-one>
+        
+        <property name="is_finished" type="boolean">
+            <column name="is_finished"/>
+        </property>
+        
+        <set name="games" table="round_game" lazy="false" fetch="select" cascade="all" sort="natural">
+            <key>
+                <column name="id_round"/>
+            </key>
+            
+            <many-to-many class="hibernate.mappings.Game">
+                <column name="id_game"/>
+            </many-to-many>
+        </set>
+        
+        <property name="num" type="integer">
+            <column name="num"/>
+        </property>
+        
+    </class>
+</hibernate-mapping>

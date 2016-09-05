@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 26, 2016 4:43:40 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="hibernate.mappings.User" table="user" catalog="olympics_db" optimistic-lock="version">
+        <id name="iduser" type="java.lang.Integer">
+            <column name="iduser" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="country" class="hibernate.mappings.Country" lazy="false" fetch="select">
+            <column name="country_id" />
+        </many-to-one>
+        <property name="username" type="string">
+            <column name="username" length="45" not-null="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="45" not-null="true" />
+        </property>
+        <property name="name" type="string">
+            <column name="name" length="45" not-null="true" />
+        </property>
+        <property name="surname" type="string">
+            <column name="surname" length="45" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="45" not-null="true" />
+        </property>
+        <property name="type" type="string">
+            <column name="type" length="45" not-null="true" />
+        </property>
+        
+        <set name="competitions" table="competition" inverse="true" fetch="select" lazy="true">
+            <key>
+                <column name="id_delegate"/>
+            </key>
+            
+            <one-to-many class="hibernate.mappings.Competition"/>
+        </set>
+        
+        <property name="approved" type="boolean">
+            <column name="approved"/>
+        </property>
+    </class>
+</hibernate-mapping>

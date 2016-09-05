@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.Record" table="record" catalog="olympics_db">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        
+        <property name="year" type="int">
+            <column name="year"/>
+        </property>
+        
+        <property name="location" type="string">
+            <column name="location" length="64" />
+        </property>
+        
+        <many-to-one name="sportDiscipline" class="hibernate.mappings.SportDiscipline" lazy="false" fetch="select">
+            <column name="id_sport_discipline"/>
+        </many-to-one>
+        
+        <property name="firstName" type="string">
+            <column name="first_name" length="32" />
+        </property>
+        
+        <property name="lastName" type="string">
+            <column name="last_name" length="32" />
+        </property>
+        
+        <many-to-one name="country" class="hibernate.mappings.Country" fetch="select" lazy="false">
+            <column name="id_country"/>
+        </many-to-one>
+        
+        <property name="result" type="string">
+            <column name="result" length="32" />
+        </property>
+    </class>
+</hibernate-mapping>

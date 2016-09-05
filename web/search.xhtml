@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="template.xhtml">
+            <ui:define name="content">
+                <p:panelGrid columns="2">
+
+                    <p:dataTable value="#{search.countries}"
+                                 var="c"
+                                 paginator="true"
+                                 rows="10"
+                                 rowsPerPageTemplate="5 10 15 20">
+                        <p:column>
+                            <f:facet name="header"> Flag </f:facet>
+                            <p:graphicImage library="images" name="#{c.flagRef}" class="flag"></p:graphicImage>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Name </f:facet>
+                                #{c.name}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Gold </f:facet>
+                                #{c.gold}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Silver </f:facet>
+                                #{c.silver}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Bronze </f:facet>
+                                #{c.bronze}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Total </f:facet>
+                                #{c.gold + c.silver + c.bronze}
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header"> Sportisti </f:facet>
+                                #{c.sportsmans.size()}
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:panelGroup>
+                        <h:panelGroup>
+                            <h:form>
+                                <p:outputLabel for="id_first_name" value="Ime"/>
+                                <p:inputText id="id_first_name" value="#{search.firstName}"/>
+                                <br/>
+
+                                <p:outputLabel for="id_last_name" value="Prezime"/>
+                                <p:inputText id="id_last_name" value="#{search.lastName}"/>
+                                <br/>
+
+                                <p:outputLabel for="id_country" value="Zemlja"/>
+                                <p:autoComplete id="id_country"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                value="#{search.country}"
+                                                completeMethod="#{search.queryCountries}"
+                                                var="country"
+                                                itemLabel="#{country.name}"
+                                                itemValue="#{country}"
+                                                converter="CountryConverter"/>
+                                <br/>
+
+                                <p:outputLabel for="id_sport" value="Sport"/>
+                                <p:autoComplete id="id_sport"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                value="#{search.sport}"
+                                                completeMethod="#{search.querySports}"
+                                                var="sport"
+                                                itemLabel="#{sport.name}"
+                                                itemValue="#{sport}"
+                                                converter="SportConverter">
+                                    <p:ajax event="itemSelect"/>
+                                </p:autoComplete>
+                                <br/>
+
+                                <p:outputLabel for="id_sport_discipline" value="Disciplina"/>
+                                <p:autoComplete id="id_sport_discipline"
+                                                dropdown="true"
+                                                forceSelection="true"
+                                                value="#{search.sportDiscipline}"
+                                                completeMethod="#{search.queryDisciplines}"
+                                                var="sportDiscipline"
+                                                itemLabel="#{sportDiscipline.name}"
+                                                itemValue="#{sportDiscipline}"
+                                                converter="SportDisciplineConverter"/>
+                                <br/>
+
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel for="id_sex" value="Pol"/>
+                                    <p:selectOneRadio id="id_sex" value="#{search.sex}">
+                                        <f:selectItem itemLabel="Muski" itemValue="m"/>
+                                        <f:selectItem itemLabel="Zenski" itemValue="z"/>
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel for="id_medalist" value="Osvajac medalje"/>
+                                    <p:selectBooleanCheckbox id="id_medalist" value="#{search.medalist}"/>
+                                </h:panelGrid>
+                                <br/>
+
+                                <p:commandButton 
+                                    value="Pretrazi"
+                                    action="#{search.sarchSportsmans()}"
+                                    update="@all"
+                                    process="@all"/>
+                            </h:form>
+                        </h:panelGroup>
+
+                        <p:dataTable
+                            id="id_table_sportsmans"
+                            var="sportsman"
+                            value="#{search.sportsmans}"
+                            rows="10"
+                            paginator="true"
+                            rowsPerPageTemplate="10 20 50 100">
+                            <p:column>
+                                #{sportsman.firstName} &nbsp; #{sportsman.lastName}
+                            </p:column>
+                        </p:dataTable>  
+
+
+                    </h:panelGroup>
+
+
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="hibernate.mappings.Game" table="game" catalog="olympics_db">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="team1" class="hibernate.mappings.Team" fetch="select" lazy="false">
+            <column name="id_team1"/>
+        </many-to-one>
+        
+        <many-to-one name="team2" class="hibernate.mappings.Team" fetch="select" lazy="false">
+            <column name="id_team2"/>
+        </many-to-one>
+        
+        <many-to-one name="sportsman1" class="hibernate.mappings.Sportsman" fetch="select" lazy="false">
+            <column name="id_sportsman1"/>
+        </many-to-one>
+        
+        <many-to-one name="sportsman2" class="hibernate.mappings.Sportsman" fetch="select" lazy="false">
+            <column name="id_sportsman2"/>
+        </many-to-one>
+        
+        <many-to-one name="qualifyingGroup" class="hibernate.mappings.QualifyingGroup" fetch="select" lazy="false">
+            <column name="id_qualifying_group"/>
+        </many-to-one>
+        
+        <property name="date_and_time" type="timestamp">
+            <column name="date_and_time"/>
+        </property>
+        
+        <property name="result" type="string">
+            <column name="result" length="32"/>
+        </property>
+        
+        <property name="location" type="string">
+            <column name="location" length="64"/>
+        </property>
+
+
+    </class>
+</hibernate-mapping>
